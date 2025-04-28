@@ -1,0 +1,6 @@
+{
+    "executableName": "numberconverter.exe",
+    "files.associations": {
+        "ctype.h": "c"
+    },
+}

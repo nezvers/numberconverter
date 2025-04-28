@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "delete build",
+            "type": "shell",
+            "command": "if exist .\\build\\${config:executableName} del /F /Q .\\build\\${config:executableName}",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Clear previous build",
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": ["/C"]
+                }
+            }
+        },
+        {
+            "label": "Cmake configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-S",
+                ".",
+                "-B",
+                "./build",
+                "-G",
+                "MinGW Makefiles",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Update new source files"
+        },
+        {
+            "label": "MinGW build",
+            "type": "shell",
+            "command": "mingw32-make",
+            "args": [
+                "-C",
+                "./build",
+            ],
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Build with MinGW"
+        },
+        {
+            "label": "build all",
+            "dependsOn": ["delete build", "Cmake configure", "MinGW build"],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "re-build",
+            "dependsOn": ["delete build", "MinGW build"],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
