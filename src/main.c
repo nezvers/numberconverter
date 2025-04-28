@@ -99,8 +99,8 @@ long long bin2int(char *input){
 }
 
 void print_binary(long long value){
-  char bin[65] = {0};
-  int i = 64;
+  char bin[67] = {0};
+  int i = 66;
   while(value != 0){
     i--;
     bin[i] = value & 1 ? '1' : '0';
