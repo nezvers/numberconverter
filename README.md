@@ -31,5 +31,5 @@ mingw32-make -C ./build
 ```
 ##### GCC
 ```
-gcc src/numberconverter.c -o numberconverter.exe
+gcc src/main.c -o numberconverter.exe
 ```
