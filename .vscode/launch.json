@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/${config:executableName}",
-            "args": [],
+            "args": ["0b10110 * 0x4"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

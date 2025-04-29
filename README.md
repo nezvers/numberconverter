@@ -1,9 +1,11 @@
 # numberconverter
  A tool to see converted value from integer, hex and binary + ability to bit shift
 - Place compiled executable reachable from cmd/powershell/terminal
-- `numberconverter 420 "<<" 2`
-- `numberconverter 0xff69`
-- `numberconverter 0b10110 ">>" 1`
+- Enter expression as a string with single number (int, binary, hex) or [number operator number]
+- Supports operators +, -, *, /, %, &, |, ^, <<, >>
+- `numberconverter "420 << 2"`
+- `numberconverter "0xff69"`
+- `numberconverter "0b10110 & 1"`
 
 ## Build
 ```
@@ -27,7 +29,7 @@ cmake -S . -B ./build -G "${YOUR_BUILD_TARGET_CHOICE}"
 ```
 cmake -S . -B ./build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
 mingw32-make -C ./build
-./build/numberconverter.exe 0b10110 ">>" 1
+./build/numberconverter.exe "0b10110 >> 1"
 ```
 ##### GCC
 ```

@@ -5,8 +5,30 @@
 #include <ctype.h>
 #include <stdint.h>
 
-int shift_left = 0;
-int shift_right = 0;
+enum TokenType {INTEGER, BINARY, HEX, SHIFT_LEFT, SHIFT_RIGHT, AND, OR, XOR, PLUS, MINUS, MULTIPLY, DIVIDE, MODULO};
+
+typedef struct{
+  char* str;
+  uint16_t type; // TokenType
+  long long value;
+}Token;
+
+#define MAX_TOKENS 3
+Token tokens[MAX_TOKENS] = {};
+uint16_t token_count = 0;
+
+bool get_tokens(const char* input){
+  size_t length = strlen(input);
+  
+  char* str = strtok((char*)input, " \n");
+  while (str != NULL){
+    tokens[token_count].str = str;
+    token_count++;
+    str = strtok(NULL, " \n");
+  }
+  return true;
+}
+
 
 bool is_integer(const char* input){
   int length = strlen(input);
@@ -28,7 +50,7 @@ bool is_integer(const char* input){
 
 bool is_binary(const char* input){
   int length = strlen(input);
-  if (length < 3){
+  if (length < 3 || length > 66){
     return false;
   }
   if ((strncmp(input, "0b", 2) != 0) && (strncmp(input, "0B", 2) != 0)){
@@ -112,86 +134,139 @@ void print_binary(long long value){
 }
 
 void print_output(long long value){
-  if (shift_left != 0){
-    value = value << shift_left;
-  }
-  else if (shift_right != 0){
-    value = value >> shift_right;
-  }
-
   printf("int: %d\n", value);
   printf("hex: 0x%02x\n", value);
   print_binary(value);
 }
 
-void parse_integer_string(const char* input){
-  printf("Input: %s\n", input);
-  
+long long parse_integer_string(const char* input){
   long long value;
   sscanf(input, "%d", &value);
-  print_output(value);
+  return value;
 }
 
-void parse_binary_string(const char* input){
-  printf("Input: %s\n", input);
-
-  long long value = bin2int((char*)input);
-  print_output(value);
+long long parse_binary_string(const char* input){
+  return bin2int((char*)input);
 }
 
-void parse_hex_string(const char* input){
-  printf("Input: %s\n", input);
+long long parse_hex_string(const char* input){
+  return hex2int((char*)input);
+}
 
-  long long value = hex2int((char*)input);
-  print_output(value);
+bool process_value_token(Token* token){
+  if (is_integer(token->str)){
+    token->value = parse_integer_string(token->str);
+    token->type = INTEGER;
+  }
+  else if (is_binary(token->str)){
+    token->value = parse_binary_string(token->str);
+    token->type = BINARY;
+  }
+  else if (is_hex(token->str)){
+    token->value = parse_hex_string(token->str);
+    token->type = HEX;
+  }
+  else{
+    printf("Number not recognized: %s\n", token->str);
+    return false;
+  }
+  return true;
+}
+
+bool process_operator_token(Token* token){
+  if (strncmp(token->str, "<<", 2) == 0){
+    token->type = SHIFT_LEFT;
+  }
+  else if (strncmp(token->str, ">>", 2) == 0){
+    token->type = SHIFT_RIGHT;
+  }
+  else if (strncmp(token->str, "|", 1) == 0){
+    token->type = OR;
+  }
+  else if (strncmp(token->str, "&", 1) == 0){
+    token->type = AND;
+  }
+  else if (strncmp(token->str, "^", 1) == 0){
+    token->type = XOR;
+  }
+  else if (strncmp(token->str, "%", 1) == 0){
+    token->type = MODULO;
+  }
+  else if (strncmp(token->str, "+", 1) == 0){
+    token->type = PLUS;
+  }
+  else if (strncmp(token->str, "-", 1) == 0){
+    token->type = MINUS;
+  }
+  else if (strncmp(token->str, "*", 1) == 0){
+    token->type = MULTIPLY;
+  }
+  else if (strncmp(token->str, "/", 1) == 0){
+    token->type = DIVIDE;
+  }
+  else{
+    printf("Operator not recognized: %s\n", token->str);
+    printf("Supported only +, -, *, /, %%, &, |, ^, <<, >>\n");
+    return false;
+  }
+  return true;
+}
+
+long long get_result(){
+  if (token_count == 1){
+    return tokens[0].value;
+  }
+
+  switch (tokens[1].type){
+    case SHIFT_LEFT:
+      return tokens[0].value << tokens[2].value;
+    case SHIFT_RIGHT:
+      return tokens[0].value >> tokens[2].value;
+    case AND:
+      return tokens[0].value & tokens[2].value;
+    case OR:
+      return tokens[0].value | tokens[2].value;
+    case XOR:
+      return tokens[0].value ^ tokens[2].value;
+    case PLUS:
+      return tokens[0].value + tokens[2].value;
+    case MINUS:
+      return tokens[0].value - tokens[2].value;
+    case MULTIPLY:
+      return tokens[0].value * tokens[2].value;
+    case DIVIDE:
+      return tokens[0].value / tokens[2].value;
+    case MODULO:
+      return tokens[0].value % tokens[2].value;
+  }
 }
 
 int main(int argc, char* argv[]){
-// int main(){
-//   int argc = 4;
-//   char* argv[] = {"", "0b10110", ">>", "1"};
-
   printf("\n");
   if (argc < 2){
-    printf("Expecting a number: decimal (14), hex (0xFF1C), or binary (0b01101001)");
+    printf("No provided input.");
     return 0;
   }
 
-  if (argc > 3){
-    if (strncmp(argv[2], "<<", 2) == 0){
-      sscanf(argv[3], "%d", &shift_left);
-      if(shift_left < 1){
-        printf("Incorrect shifting count: %s\n", argv[3]);
-        return 0;
-      }
-    }
-    else if(strncmp(argv[2], ">>", 2) == 0){
-      sscanf(argv[3], "%d", &shift_right);
-      if(shift_right < 1){
-        printf("Incorrect shifting count: %s\n", argv[3]);
-        return 0;
-      }
-    }
-    else{
-      printf("Unsupported opperation: %s\n", argv[2]);
-      return 0;
-    }
+  if (!get_tokens(argv[1])){
+    return 1;
   }
-
-  if (is_integer(argv[1])){
-    parse_integer_string(argv[1]);
-    return 0;
+  if (token_count != 1 && token_count != 3){
+    printf("Enter only either single number or [number operator number]\n");
+    return 1;
   }
-  else if (is_binary(argv[1])){
-    parse_binary_string(argv[1]);
-    return 0;
+  if (!process_value_token(&tokens[0])){
+    return 1;
   }
-  else if (is_hex(argv[1])){
-    parse_hex_string(argv[1]);
-    return 0;
+  if (token_count > 2 && !process_operator_token(&tokens[1])){
+    return 1;
   }
-
-  printf("Invalid number! Expecting a number: integer (14), hex (0xFF1C), or binary (0b01101001)");
+  if (token_count > 2 && !process_value_token(&tokens[2])){
+    return 1;
+  }
+  
+  long long value = get_result();
+  print_output(value);
 
   return 0;
 }
