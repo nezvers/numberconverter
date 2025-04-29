@@ -3,6 +3,7 @@
 - Place compiled executable reachable from cmd/powershell/terminal
 - Enter expression as a string with single number (int, binary, hex) or [number operator number]
 - Supports operators +, -, *, /, %, &, |, ^, <<, >>
+- Represents output in all 3 formats - integer, binary, hex
 - `numberconverter "420 << 2"`
 - `numberconverter "0xff69"`
 - `numberconverter "0b10110 & 1"`
