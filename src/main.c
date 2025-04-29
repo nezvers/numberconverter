@@ -140,7 +140,7 @@ void print_output(long long value){
 }
 
 long long parse_integer_string(const char* input){
-  long long value;
+  long long value = 0;
   sscanf(input, "%d", &value);
   return value;
 }
