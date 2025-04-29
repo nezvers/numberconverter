@@ -7,11 +7,11 @@
 
 enum TokenType {INTEGER, BINARY, HEX, SHIFT_LEFT, SHIFT_RIGHT, AND, OR, XOR, PLUS, MINUS, MULTIPLY, DIVIDE, MODULO};
 
-typedef struct{
+typedef struct Token{
   char* str;
   uint16_t type; // TokenType
   long long value;
-}Token;
+} Token;
 
 #define MAX_TOKENS 3
 Token tokens[MAX_TOKENS] = {};
