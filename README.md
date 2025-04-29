@@ -19,6 +19,11 @@ cd numberconverter
 - Wait until `Output` tab says `CMake generation finished`
 - In dropdown menu next to "Play" button choose `numberconverter.exe`
 
+##### GCC `".exe" for windows`
+```
+gcc src/main.c -o numberconverter.exe
+```
+
 ##### Cmake
 - Cmake should be installed and accessible from cmd/powershell/terminal
 ```
@@ -31,8 +36,4 @@ cmake -S . -B ./build -G "${YOUR_BUILD_TARGET_CHOICE}"
 cmake -S . -B ./build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
 mingw32-make -C ./build
 ./build/numberconverter.exe "0b10110 >> 1"
-```
-##### GCC
-```
-gcc src/main.c -o numberconverter.exe
 ```
