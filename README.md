@@ -1,5 +1,5 @@
 # numberconverter
- A tool to see converted value from integer, hex and binary + ability to bit shift
+ A tool to see converted value from integer, hex and binary + ability to operate on it
 - Place compiled executable reachable from cmd/powershell/terminal
 - Enter expression as a string with single number (int, binary, hex) or [number operator number]
 - Supports operators +, -, *, /, %, &, |, ^, <<, >>
