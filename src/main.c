@@ -123,8 +123,11 @@ long long bin2int(char *input){
 void print_binary(long long value){
   char bin[67] = {0};
   int i = 66;
-  while(value != 0 && i > 2){
+  while(i > 2){
     bin[--i] = (value & 1) == 1 ? '1' : '0';
+    if (value == 0){
+      break;
+    }
     value = value >> 1;
   }
   bin[--i] = 'b';
@@ -234,6 +237,10 @@ long long get_result(){
     case MULTIPLY:
       return tokens[0].value * tokens[2].value;
     case DIVIDE:
+      if (tokens[2].value == 0){
+        printf("Can't divide by zero\n");
+        return 0;
+      }
       return tokens[0].value / tokens[2].value;
     case MODULO:
       return tokens[0].value % tokens[2].value;

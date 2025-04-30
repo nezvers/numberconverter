@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/${config:executableName}",
-            "args": ["-3"],
+            "args": ["9223372036854775807"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
