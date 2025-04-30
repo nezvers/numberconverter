@@ -123,9 +123,8 @@ long long bin2int(char *input){
 void print_binary(long long value){
   char bin[67] = {0};
   int i = 66;
-  while(value != 0){
-    i--;
-    bin[i] = value & 1 ? '1' : '0';
+  while(value != 0 && i > 2){
+    bin[--i] = (value & 1) == 1 ? '1' : '0';
     value = value >> 1;
   }
   bin[--i] = 'b';
@@ -134,14 +133,14 @@ void print_binary(long long value){
 }
 
 void print_output(long long value){
-  printf("int: %d\n", value);
-  printf("hex: 0x%02x\n", value);
+  printf("int: %lld\n", value);
+  printf("hex: 0x%02llx\n", value);
   print_binary(value);
 }
 
 long long parse_integer_string(const char* input){
   long long value = 0;
-  sscanf(input, "%d", &value);
+  sscanf(input, "%lld", &value);
   return value;
 }
 
